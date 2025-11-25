@@ -1,11 +1,11 @@
 {
   "mcpServers": {
-    "OLS MCP Server": {
+    "IDR MCP Server": {
       "command": "uv",
       "args": [
         "tool",
         "run",
-        "ols-mcp-server"
+        "idr-mcp-server"
       ],
       "env": {}
     }

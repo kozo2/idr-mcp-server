@@ -1,42 +1,24 @@
-# OLS MCP Server
+# IDR MCP Server
 
-Large Language Models are notoriously bad at working with ontologies, often hallucinating terms or their identifiers. This server provides a reliable way to access and query ontologies, ensuring accurate and up-to-date information.
+This repository contains a Model Context Protocol (MCP) server providing access to the [Image Data Resource (IDR)](https://idr.openmicroscopy.org/) API. IDR is a public repository of reference image datasets from published scientific studies.
 
-![Speaking ontologies](images/speak_ontology.png)
-
-This repository contains a Model Context Protocol (MCP) server providing access to the [Ontology Lookup Service (OLS)](https://www.ebi.ac.uk/ols4/) API. This server enables AI assistants to search for and retrieve ontological terms, concepts, and hierarchies from various biological and medical ontologies.
-
-This server is designed to work seamlessly with AI assistants like Claude Desktop, allowing users to query ontologies using natural language. It supports a wide range of ontologies, including Gene Ontology (GO), Human Phenotype Ontology (HP), and many others. 
-
-![The mcp server in action in Claude Desktop.](images/osteo_in_claude.png)
-
-Without (top part of image below) and with mcp server engaged (bottom of figure below):
-
-![With and without mcp server in claude desktop.](images/with_wo_mcp_in_claude.png)
+This server enables AI assistants to explore and query imaging data, including high-content screening studies, microscopy datasets, and associated scientific annotations.
 
 ## Features
 
-The OLS MCP Server provides the following tools:
+The IDR MCP Server provides the following tools:
 
-- **🔍 Search Terms**: Search for terms across ontologies with flexible filtering
-- **📚 Search Ontologies**: Discover available ontologies and their metadata
-- **ℹ️ Get Ontology Information**: Retrieve detailed information about specific ontologies
-- **🎯 Get Term Information**: Get comprehensive details about specific terms
-- **🌳 Get Term Children**: Find direct child terms in ontological hierarchies
-- **👨‍👩‍👧‍👦 Get Term Ancestors**: Retrieve parent terms and ancestors
-- **🤖 Find Similar Terms**: Discover semantically similar terms using LLM embeddings
-
-## Supported Ontologies
-
-The server works with any ontology available through the EBI Ontology Lookup Service, including:
-
-- **GO** (Gene Ontology)
-- **EFO** (Experimental Factor Ontology)
-- **HP** (Human Phenotype Ontology)
-- **MONDO** (Monarch Disease Ontology)
-- **ChEBI** (Chemical Entities of Biological Interest)
-- **UBERON** (Uber-anatomy ontology)
-- And many more...
+- **🔍 Search Studies**: Search for screens and projects in IDR
+- **📊 Get Screen Info**: Retrieve detailed information about specific screens
+- **📁 Get Project Info**: Retrieve detailed information about specific projects
+- **🧫 Get Plates**: List plates in a screen with pagination support
+- **📂 Get Datasets**: List datasets in a project
+- **🖼️ Get Images in Dataset**: List images contained in a dataset
+- **🔲 Get Plate Grid**: Retrieve plate grid structure with wells and images
+- **📋 Get Image Metadata**: Get comprehensive image metadata (dimensions, channels, pixel size)
+- **🏷️ Get Annotations**: Retrieve map annotations (key-value metadata) for objects
+- **🖼️ Get Thumbnail URL**: Generate thumbnail URLs for images
+- **🌐 Get Image URL**: Generate rendered image URLs
 
 ## Installation
 
@@ -55,12 +37,12 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### Install the OLS MCP Server
+### Install the IDR MCP Server
 
 ```bash
 # Clone the repository
-git clone https://github.com/seandavi/ols-mcp-server.git
-cd ols-mcp-server
+git clone https://github.com/kozo2/idr-mcp-server.git
+cd idr-mcp-server
 
 # Install dependencies
 uv sync
@@ -81,12 +63,12 @@ To use this server with Claude Desktop, add the following configuration to your 
 ```json
 {
   "mcpServers": {
-    "ols-mcp-server": {
+    "idr-mcp-server": {
       "command": "uv",
       "args": [
         "tool",
         "run",
-        "ols-mcp-server"
+        "idr-mcp-server"
       ],
       "env": {}
     }
@@ -101,8 +83,8 @@ If you installed the server as a uv tool, you can use this simpler configuration
 ```json
 {
   "mcpServers": {
-    "ols-mcp-server": {
-      "command": "ols-mcp-server",
+    "idr-mcp-server": {
+      "command": "idr-mcp-server",
       "args": [],
       "env": {}
     }
@@ -110,32 +92,54 @@ If you installed the server as a uv tool, you can use this simpler configuration
 }
 ```
 
-
 ## Usage Examples
 
-Once configured with Claude Desktop, you can use natural language to interact with the OLS API:
+Once configured with Claude Desktop, you can use natural language to interact with the IDR API:
 
-### Searching for Terms
+### Exploring Studies
 
-> "Search for terms related to diabetes in the Human Phenotype Ontology"
+> "List all available screens in IDR"
 
-> "Find all terms containing 'apoptosis' in the Gene Ontology"
+> "Show me the projects available in the Image Data Resource"
 
-### Getting Ontology Information
+### Getting Study Details
 
-> "Tell me about the Gene Ontology"
+> "Get information about screen 102"
 
-> "What ontologies are available for chemical compounds?"
+> "Tell me about project 51"
 
-### Exploring Term Hierarchies
+### Browsing Data Structure
 
-> "Show me the children of the term 'metabolic process' in GO"
+> "Show me the plates in screen 1201"
 
-> "What are the ancestor terms for HP:0000118?"
+> "List datasets in project 101"
 
-### Finding Similar Terms
+> "What images are in dataset 369"
 
-> "Find terms similar to 'heart development' in the Gene Ontology"
+### Image Analysis
+
+> "Get metadata for image 1884807"
+
+> "What are the dimensions of image 1920093?"
+
+### Accessing Annotations
+
+> "What annotations are associated with image 1884807?"
+
+> "Show me the metadata annotations for screen 102"
+
+### Getting Image URLs
+
+> "Get a thumbnail URL for image 1884807"
+
+> "Generate a rendered image URL for image 1920093"
+
+## API Documentation
+
+The server interacts with the IDR API. For more information, see:
+
+- [IDR API Documentation](https://idr.openmicroscopy.org/about/api.html)
+- [IDR Website](https://idr.openmicroscopy.org/)
 
 ## Development Setup
 
@@ -143,13 +147,13 @@ Once configured with Claude Desktop, you can use natural language to interact wi
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd ols-mcp-server
+   git clone https://github.com/kozo2/idr-mcp-server.git
+   cd idr-mcp-server
    ```
 
 2. **Install dependencies**:
    ```bash
-   uv sync --extra dev
+   uv sync
    ```
 
 3. **Activate the virtual environment**:
@@ -158,7 +162,6 @@ Once configured with Claude Desktop, you can use natural language to interact wi
    # or
    .venv\Scripts\activate     # Windows
    ```
-
 
 ### Code Quality
 
@@ -173,22 +176,12 @@ uv run ruff check
 uv run mypy src/
 ```
 
-
 ### Adding New Features
 
-1. **Add new tools** in `src/ols_mcp_server/server.py` using the `@mcp.tool()` decorator
-2. **Create models** in `src/ols_mcp_server/models.py` for structured responses
+1. **Add new tools** in `src/idr_mcp_server/server.py` using the `@mcp.tool()` decorator
+2. **Create models** in `src/idr_mcp_server/models.py` for structured responses
 3. **Update tests** to cover new functionality
 4. **Update documentation** as needed
-
-### API Documentation
-
-The server interacts with the EBI Ontology Lookup Service API v2. Key endpoints:
-
-- **Search**: `https://www.ebi.ac.uk/ols4/api/search`
-- **Ontologies**: `https://www.ebi.ac.uk/ols4/api/v2/ontologies`
-- **Terms**: `https://www.ebi.ac.uk/ols4/api/terms`
-- **Hierarchies**: `https://www.ebi.ac.uk/ols4/api/v2/ontologies/{ontology}/classes/{term}/children`
 
 ## Troubleshooting
 
@@ -199,7 +192,6 @@ The server interacts with the EBI Ontology Lookup Service API v2. Key endpoints:
 3. **Network errors**: Check your internet connection and firewall settings
 4. **Python version**: Ensure you're using Python 3.12 or higher
 
-
 ## Contributing
 
 1. Fork the repository
@@ -208,10 +200,10 @@ The server interacts with the EBI Ontology Lookup Service API v2. Key endpoints:
 4. Run tests: `uv run pytest`
 5. Format code: `uv run ruff format`
 6. Submit a pull request
-]
 
 ## Acknowledgments
 
-- [EBI Ontology Lookup Service](https://www.ebi.ac.uk/ols4/) for providing the API
+- [Image Data Resource (IDR)](https://idr.openmicroscopy.org/) for providing access to reference image datasets
+- [Open Microscopy Environment (OME)](https://www.openmicroscopy.org/) for developing the OMERO platform and IDR
 - [FastMCP](https://github.com/jlowin/fastmcp) for the MCP framework
-- The ontology communities for maintaining these valuable resources
+- The scientific imaging community for contributing valuable reference datasets
